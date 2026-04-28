@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple Post Form</title>
+</head>
+<body>
+
+    <h2>Submit Data</h2>
+
+    <form id="dataForm">
+        <label for="name">Name:</label><br>
+        <input type="text" id="name" name="name" required><br><br>
+
+        <label for="title">Title:</label><br>
+        <input type="text" id="title" name="title" required><br><br>
+
+        <label for="body">Body:</label><br>
+        <textarea id="body" name="body" required></textarea><br><br>
+
+        <button type="submit">Submit</button>
+    </form>
+
+    <p id="responseMessage"></p>
+
+    <script>
+        document.getElementById('dataForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const formData = {
+                name: document.getElementById('name').value,
+                title: document.getElementById('title').value,
+                body: document.getElementById('body').value
+            };
+
+            fetch('https://jsonplaceholder.typicode.com/posts', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(response => {
+                const msg = document.getElementById('responseMessage');
+                if (response.ok) {
+                    msg.innerText = "Success! Data submitted to test API.";
+                    msg.style.color = "green";
+                    document.getElementById('dataForm').reset();
+                } else {
+                    msg.innerText = "Error: Server returned " + response.status;
+                    msg.style.color = "red";
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                const msg = document.getElementById('responseMessage');
+                msg.innerText = "Submission failed (Network Error).";
+                msg.style.color = "red";
+            });
+        });
+    </script>
+
+</body>
+</html>
